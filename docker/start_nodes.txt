@@ -1,0 +1,11 @@
+ # Docker
+# Start 4 cells with 3 nodes per cell 
+docker compose -f ./docker-compose.yml up -d
+
+# Get partitions distribution
+# Does NOT work in git bash
+docker exec -it $(docker ps -q | head -1) apache-ignite/bin/control.sh --cache distribution null --user-attributes CELL | tee partitions.txt
+
+# Cmd
+docker ps -q
+docker exec -it <> apache-ignite/bin/control.sh --cache distribution null --user-attributes CELL > partitions.txt
