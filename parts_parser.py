@@ -10,9 +10,13 @@ def load_parts(file_name):
 
     table_header_str = None
 
+    grp_id_idx = 0
+    table_columns = []
+    attrs_names = []
+
     for line in parts_file:
         if not table_header_str:
-            match = re.match('\[(.+)\]', line)
+            match = re.match(r'\[(.+)', line)
         
             if match:
                 table_header_str, = match.groups()
@@ -26,20 +30,20 @@ def load_parts(file_name):
             continue
         
         if '[next group: ' in line:
-            group_id, name = re.match('.+id=(.+), name=(.+)\]', line).groups()
+            group_id, name = re.match(r'.+id=(.+), name=(.+)]', line).groups()
             cache_groups_dict[group_id] = name
         elif 'Control utility [' in line:
             break
         else:
-            match = re.match('(.+),\[(.+)\],(.+)', line)
+            match = re.match(r'(.+),\[(.+)],(.+)', line)
             if match is not None:
-                vals_str, addrs_str, attrs_str = match.groups()
+                vals_str, address_str, attrs_str = match.groups()
 
                 vals = vals_str.split(',')
                 vals[grp_id_idx] = cache_groups_dict.get(vals[grp_id_idx], vals[grp_id_idx])
 
                 row = vals
-                row.append(addrs_str)
+                row.append(address_str)
                 row += attrs_str.split(',')
 
                 table.append(row)
